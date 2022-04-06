@@ -1,0 +1,6 @@
+Mode="Library"
+
+[VarList]
+Function init "webtools.js/init"
+Function Title "webtools.js/title"
+Function
