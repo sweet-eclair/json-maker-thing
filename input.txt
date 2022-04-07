@@ -1,9 +1,1 @@
-[colors]
-red='800'
-green='080'
-blue='048'
-
-[food]
-bacon=colors.red
-salad=colors.green
-blueberry=colors.blue
+s="Hello world!\nUwU"

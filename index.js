@@ -3,7 +3,10 @@ const numList = ['1','2','3','4','5','6','7','8','9','0'];
 const Parser = require('expr-eval').Parser;
 const errorTypes = {
 	undefinedLbl: "Label '{}' is undefined",
-	undefined: "Variable '{}' is undefined"
+	undefined: "Variable '{}' is undefined",
+	unfinishedLbl: "Unfinished label '{}'",
+	unfinishedStr: "Unfinished string '{}'",
+	invalidEscape: "Invalid escape character \\{}"
 }
 
 let inputFile = 'input.txt';
@@ -90,26 +93,83 @@ function getTokens(data){
         tok='';
         continue;
       }
+			if(c=='\n'||c=='\r'){
+				logError('unfinishedLbl',tok);
+			}
       tok=tok+c;
     }
     if(mode==2){
-			if(c=='@'){c='\\@';}
-      if(c=='"'&&tok.substring(tok.length-1)!='\\'){
+			if(tok.substring(tok.length-1)=='\\'){
+				tok=tok.substring(0,tok.length-1);
+				let x;
+				switch(c){
+					case '"':
+						x=c;
+						break;
+					case "'":
+						x=c;
+						break;
+					case 'n':
+						x='\n';
+						break;
+					case 'r':
+						x='\r';
+						break;
+					case 't':
+						x='\t';
+						break;
+					default:
+						logError('invalidEscape',c);
+				}
+				tok=tok+x;
+				continue;
+			}
+      if(c=='"'){
         toks.push('STR:'+tok);
         tok='';
         mode=0;
         continue;
       }
+			if(c=='\n'||c=='\r'){
+				logError('unfinishedStr',tok);
+			}
       tok=tok+c;
     }
     if(mode==2.5){
-			if(c=='@'){c='\\@';}
-      if(c=="'"&&tok.substring(tok.length-1)!='\\'){
+			if(tok.substring(tok.length-1)=='\\'){
+				tok=tok.substring(0,tok.length-1);
+				let x;
+				switch(c){
+					case '"':
+						x=c;
+						break;
+					case "'":
+						x=c;
+						break;
+					case 'n':
+						x='\n';
+						break;
+					case 'r':
+						x='\r';
+						break;
+					case 't':
+						x='\t';
+						break;
+					default:
+						logError('invalidEscape',c);
+				}
+				tok=tok+x;
+				continue;
+			}
+      if(c=="'"){
         toks.push('STR:'+tok);
         tok='';
         mode=0;
         continue;
       }
+			if(c=='\n'||c=='\r'){
+				logError('unfinishedStr',tok);
+			}
       tok=tok+c;
     }
     if(mode==3){
