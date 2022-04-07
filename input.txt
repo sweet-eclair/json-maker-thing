@@ -1,1 +1,11 @@
-s="Hello world!\nUwU"
+a=1
+b=y.c
+
+[x]
+a=2
+b=a
+
+[y]
+a=5
+b=main.a
+c=x.b

@@ -1,11 +1,12 @@
 {
-  "name": "SitePlate",
+  "name": "LabelCode",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "expr-eval": "^2.0.2",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "yargs": "^17.4.0"
   },
   "devDependencies": {},
   "scripts": {

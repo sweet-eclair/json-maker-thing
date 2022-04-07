@@ -1,4 +1,7 @@
 const fs = require('fs');
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv)).argv
 const numList = ['1','2','3','4','5','6','7','8','9','0'];
 const Parser = require('expr-eval').Parser;
 const errorTypes = {
@@ -6,18 +9,8 @@ const errorTypes = {
 	undefined: "Variable '{}' is undefined",
 	unfinishedLbl: "Unfinished label '{}'",
 	unfinishedStr: "Unfinished string '{}'",
-	invalidEscape: "Invalid escape character \\{}"
-}
-
-let inputFile = 'input.txt';
-let outFile = 'output.json';
-
-function interpArgs(a){
-	let res = {
-		input: null,
-		output: 'output.json',
-		verbose: false
-	}
+	invalidEscape: "Invalid escape character \\{}",
+	noInput: "No input file specified"
 }
 
 function getTokens(data){
@@ -281,7 +274,7 @@ function parse(toks){
         model[curr]={};
         break;
       default:
-        setVar(thislabel,len,tok);
+        setVar(thislabel,curr,len,tok);
         len++;
         break;
     }
@@ -291,6 +284,7 @@ function parse(toks){
 }
 
 function logError(type,arg){
+	arg=arg||'';
 	console.log('Error: '+errorTypes[type].split('{}').join(arg)+';');
 	process.exit(1);
 }
@@ -308,8 +302,8 @@ function main(file,ofile,verbose){
     let tokens = getTokens(''+data+'\n');
     let tree = parse(tokens);
 		let json = JSON.stringify(tree);
-		if(verbose){
-			console.clear();
+		if(verbose===true){
+			//console.clear();
 			logSeparator('Tokens');
 			console.log(tokens);
     	logSeparator('Tree');
@@ -325,4 +319,9 @@ function main(file,ofile,verbose){
   });
 }
 
-main(inputFile,outFile);
+let infile = argv.input||argv.i||argv._[0];
+if(infile===undefined||infile===null){logError('noInput');}
+let ofile = argv.output||argv.o||argv._[1]||'output.json';
+let verbose = argv.verbose||argv.v||false;
+
+main(infile,ofile,verbose);
